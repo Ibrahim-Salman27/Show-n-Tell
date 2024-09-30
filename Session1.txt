@@ -1,0 +1,11 @@
+Shortlisted Topics:
+1. Graph Connectivity Checker
+   - Explores graph theory concepts such as limits, sets, and relations, including the verification of graph connectivity.
+   
+2. Password Strength Checker
+   - Utilizes permutations, combinations, mutually exclusive events, and both inclusion and exclusion principles.
+   - Considers factors influencing password strength such as length, character variety, and unpredictability.
+
+3. Pathfinding Algorithms
+   - To be elaborated in further discussions.
+
