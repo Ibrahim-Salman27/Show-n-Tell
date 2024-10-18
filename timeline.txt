@@ -17,3 +17,8 @@ Sub Topics Division :
 3.Dijkstra Algorithm(Ali Amir)
 4.A Algorithm*(Unzila Ahsan)
 5.Optimization Techniques(Ibrahim Salman)
+=======
+
+07/10/2024
+Finalized the topic "Path finding" and researhed on topics about it
+>>>>>>> 4f3a9d8ecb93ae9516c7823906d6b6a2f2ea6563
