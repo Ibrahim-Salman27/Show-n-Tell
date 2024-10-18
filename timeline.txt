@@ -2,3 +2,6 @@
 set up repo on github.
 30/09 -- 05/10
 researhed and shortlisted topics
+
+07/10/2024
+Finalized the topic "Path finding" and researhed on topics about it
