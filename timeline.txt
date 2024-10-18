@@ -2,6 +2,7 @@
 set up repo on github.
 30/09 -- 05/10
 researhed and shortlisted topics
+<<<<<<< HEAD
  
 =======
 
@@ -10,7 +11,11 @@ Finalized the topic "Path finding" and researhed on topics about it
 >>>>>>> 4f3a9d8ecb93ae9516c7823906d6b6a2f2ea6563
 
 18/10/2024
+
 Presentation Topic : Path Finding
+
+Held a Zoom meeting to assign sub topics for every group member
+
 Sub Topics Division :
 1.Graph Theory Basics(Jaffar Kazmi)
 2.BFS And DFS(Rania And Adan)
@@ -18,7 +23,3 @@ Sub Topics Division :
 4.A Algorithm*(Unzila Ahsan)
 5.Optimization Techniques(Ibrahim Salman)
 =======
-
-07/10/2024
-Finalized the topic "Path finding" and researhed on topics about it
->>>>>>> 4f3a9d8ecb93ae9516c7823906d6b6a2f2ea6563
