@@ -25,3 +25,5 @@ Sub Topics Division :
 =======
 
 uploaded a doc on optimization techniques
+
+uploaded a word doc on BFS and DFS
