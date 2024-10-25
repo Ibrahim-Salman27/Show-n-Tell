@@ -23,3 +23,5 @@ Sub Topics Division :
 4.A Algorithm*(Unzila Ahsan)
 5.Optimization Techniques(Ibrahim Salman)
 =======
+
+uploaded a doc on optimization techniques
