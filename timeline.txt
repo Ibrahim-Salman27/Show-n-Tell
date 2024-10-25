@@ -17,8 +17,8 @@ Presentation Topic : Path Finding
 Held a Zoom meeting to assign sub topics for every group member
 
 Sub Topics Division :
-1.Graph Theory Basics(Jaffar Kazmi)
-2.BFS And DFS(Rania And Adan)
+1.Graph Theory Basics(Jaffar Kazmi and Adan)
+2.BFS And DFS(Rania)
 3.Dijkstra Algorithm(Ali Amir)
 4.A Algorithm*(Unzila Ahsan)
 5.Optimization Techniques(Ibrahim Salman)
