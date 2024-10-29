@@ -31,3 +31,5 @@ uploaded a word doc on BFS and DFS
 uploaded a word doc on Dijkstra's Algorithm
 
 uploaded a document on A* Algorithm
+
+uploaded a docoument on basics of path finding.
