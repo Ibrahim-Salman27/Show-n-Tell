@@ -1,0 +1,18 @@
+24/10/2024
+
+Held a hour and a half long session in which all the members of the group shared with the others 
+what they had learned about the topics.
+
+Adan and Jaffar explained us the basic graph theory terminology
+
+Rania explained us about BFS and DFS and the difference between them and which one of them was more useful in different scenearios
+
+Ali explained Djikstra's Algortihm, how it worked and how it calculated the best possible path.
+
+Unzila explained us about the A* algorithm, how it worked and how it calculated the best possible path.
+
+Ibrahim explained us about different optimization techniques. The one's we will be using are Heuristics and Time Complexity.
+
+EVERYONE DID A GREAT JOB AND WE COULD ALL SEE THAT THEY HAD REALLY PUT IN THEIR TIME TO REALLY UNDERTSAND THE TOPICS
+
+Everyone left the session satisfied and with a great understanding of the topics.
