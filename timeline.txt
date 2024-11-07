@@ -53,3 +53,6 @@ Uploaded a document and a presentation explaining this
 
 06/11/2024
 delivered a presentation on how we will approach to writing the code for the program.
+
+11/7/2024
+wrote down introduction to graph theory on our presentation template
