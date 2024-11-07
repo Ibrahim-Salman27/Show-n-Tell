@@ -15,7 +15,7 @@ const vector<string> moves = { "U", "D", "F", "B", "L", "R" };
 const string solvedConfig = "WWWWWWWWWYYYYYYYYYBBBBBBBBBGGGGGGGGGRRRRRRRRROOOOOOOOO";
 
 // Function to calculate Manhattan distance heuristic
-int manhattanDistance(const string& cubeState) 
+int manhattanDistance(const string& cubeState)
 {
     int distance = 0;
     // Compare each face of the cube and calculate Manhattan distance for each piece
@@ -31,7 +31,7 @@ int manhattanDistance(const string& cubeState)
 }
 
 // Function to apply a move to the cube configuration
-string applyMove(const string& cubeState, const string& move) 
+string applyMove(const string& cubeState, const string& move)
 {
     // (The exact code for applying the move would be specific to how you represent the cube)
     // This is a placeholder for applying a move and updating the cube state
@@ -40,7 +40,7 @@ string applyMove(const string& cubeState, const string& move)
 }
 
 // A* Node structure to hold state, cost, and heuristic
-struct Node 
+struct Node
 {
     string state;
     int gCost; // Cost from start (number of moves)
@@ -48,14 +48,14 @@ struct Node
     int fCost() const { return gCost + hCost; } // f = g + h
     string move; // The move that led to this state
 
-    bool operator>(const Node& other) const 
+    bool operator>(const Node& other) const
     { // Min-heap based on fCost
         return fCost() > other.fCost();
     }
 };
 
 // A* search function to solve the Rubik's Cube
-vector<string> solveRubiksCube(const string& startState) 
+vector<string> solveRubiksCube(const string& startState)
 {
     priority_queue<Node, vector<Node>, greater<Node>> openList; // Min-heap
     unordered_set<string> closedList; // Set to track visited states
@@ -66,13 +66,13 @@ vector<string> solveRubiksCube(const string& startState)
     openList.push({ startState, 0, manhattanDistance(startState), "" });
     gCosts[startState] = 0;
 
-    while (!openList.empty()) 
+    while (!openList.empty())
     {
         Node currentNode = openList.top();
         openList.pop();
 
         // If we reach the solved state, we reconstruct the path
-        if (currentNode.state == solvedConfig) 
+        if (currentNode.state == solvedConfig)
         {
             vector<string> solutionMoves;
             string state = currentNode.state;
@@ -90,7 +90,7 @@ vector<string> solveRubiksCube(const string& startState)
         // Try all possible moves (U, D, F, B, L, R)
         for (const string& move : moves) {
             string newState = applyMove(currentNode.state, move);
-            if (closedList.find(newState) == closedList.end()) 
+            if (closedList.find(newState) == closedList.end())
             {
                 int tentativeGCost = currentNode.gCost + 1;
                 if (gCosts.find(newState) == gCosts.end() || tentativeGCost < gCosts[newState])
@@ -113,7 +113,7 @@ int main()
     cout << "Enter the scrambled Rubik's Cube configuration: ";
     cin >> scrambledCube;
 
-    if (scrambledCube.length() != 54) 
+    if (scrambledCube.length() != 54)
     {
         cout << "Invalid input! Please make sure the configuration has exactly 54 characters." << endl;
         return 1;
@@ -125,7 +125,7 @@ int main()
     {
         cout << "Solution found!" << endl;
         cout << "Moves: ";
-        for (const string& move : solution) 
+        for (const string& move : solution)
         {
             cout << move << " ";
         }
