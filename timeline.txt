@@ -42,7 +42,7 @@ finalized the template for the presentation.
 31/10/2024
 Discussed several unique perspectives on the demo part of the presentation.
 
-11/3/2024
+3/11/2024
 formally wrote about graph theory basics as in how to explain graph theory to someone who is listening is first time by including a simple diagram
 
 uploaded the word doc on applications of bfs and DFS
@@ -50,3 +50,9 @@ uploaded the word doc on applications of bfs and DFS
 05/11/2024
 wrote the algorithm of how to solve a rubiks cube using A*
 Uploaded a document and a presentation explaining this
+
+06/11/2024
+delivered a presentation on how we will approach to writing the code for the program.
+
+11/7/2024
+wrote down introduction to graph theory on our presentation template
