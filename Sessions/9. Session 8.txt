@@ -1,0 +1,2 @@
+Held an hour long session where we discussed the idea for our demo and understood the logic of the code through a presentation
+and everybody understoood the dynamics and the working of a rubiks cube and how we can solve it using A* algorithm
