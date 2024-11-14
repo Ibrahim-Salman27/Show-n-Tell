@@ -1,0 +1,28 @@
+Breath First Search(BFS)
+Approach:
+Explores all nodes layer by layer
+uses a queue to keep the track of visited nodes
+Time complexity:O(V+E)
+V: Each vertex is visited once during the exploration.
+E: Each edge is checked once while visiting neighbors of each node.
+Explanation: BFS visits every node and edge in the graph, leading to a time
+             complexity of O(V+E).
+Examples:
+social network 
+path finding
+
+DFS(Depth first search)
+Approach:
+it goes in depth to reach the final goal
+it uses backtrack technique (goes back to the
+node when get stuck)
+uses a stack to keep the track of visited nodes
+
+Recurrence:
+The recurrence for DFS represents the recursive exploration of nodes where, for each node,
+we recursively visit its neighbors until no more unexplored neighbors are left. This reflects
+the depth-first nature of DFS where exploration continues down a branch before backtracking.
+
+Example:
+Family tree
+Exploring a file system on computer

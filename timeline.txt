@@ -58,3 +58,14 @@ delivered a presentation on how we will approach to writing the code for the pro
 wrote down introduction to graph theory on our presentation template
 08/11/2024
 wrote about applications of graph theory
+14/11/2024 
+worked on slides for presentation
+
+
+11/14/2024
+discuss on how to present the presentation and divided the time and slides.
+
+14/11/2024
+discussed the slides with all members and updated the slides (BFS DFS part)
+
+added a text file on the content of slides
