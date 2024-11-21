@@ -1,0 +1,26 @@
+Dijkstra Algorithm : 
+A graph search algorithm used to find the shortest path between nodes in a graph.
+Dijkstra Algorithm uses greedy approach i.e. it uses relaxation formula to find the shortest distance possible between two nodes.
+When a shortest distance is found between two points that point is relaxed.
+Process of finding shortest path :
+1.Initialization: Assign to every node a tentative distance. Set the initial node’s distance to 0 and all other nodes’ distances to infinity. Mark all nodes as unvisited.The initial node becomes the current node.
+2.Relaxation: For each unvisited neighbor of the current node, calculate the tentative distance through the current node. If this distance is smaller than the current assigned distance of that neighbor, update the tentative distance.
+3.Mark visited: Once all neighbors of the current node have been considered, mark the current node as visited. A visited node will not be checked again.
+4.Selection of the next node: Select the unvisited node with the smallest tentative distance, and make it the new current node.
+5.Repeat: Repeat steps 2–4 until the destination node has been visited or all possible nodes have been processed.
+Recurrence :
+A recurrence relation defines each term of a sequence in terms of previous terms, establishing a relationship that can be solved step-by-step. An example of this is the Fibonacci sequence, which is defined by the relation 
+𝐹(𝑛)=𝐹(𝑛−1)+𝐹(𝑛−2)
+F(n)=F(n−1)+F(n−2) with initial conditions 
+F(0)=0 and 
+𝐹(1)=1.
+ Recurrence relations can be categorized into two main types: linear and non-linear. A linear recurrence relation involves linear combinations of previous terms, while a non-linear recurrence relation includes non-linear operations on previous terms.
+
+
+
+
+
+
+
+
+
