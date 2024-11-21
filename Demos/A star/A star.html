@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPS System with A* Pathfinding</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    #map {
+      height: 100vh;
+    }
+    #controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+    button {
+      margin: 5px 0;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <button id="findPath">Find Path (A → D)</button>
+  </div>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize the map
+    const map = L.map('map').setView([51.505, -0.09], 13);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors',
+    }).addTo(map);
+
+    // Example: Graph representing nodes and edges (distances in arbitrary units)
+    const graph = {
+      A: { B: 2, C: 4 },
+      B: { A: 2, C: 1, D: 7 },
+      C: { A: 4, B: 1, D: 3 },
+      D: { B: 7, C: 3 },
+    };
+
+    // Example node coordinates (lat, lon)
+    const nodeCoordinates = {
+      A: [51.505, -0.09],
+      B: [51.51, -0.1],
+      C: [51.52, -0.12],
+      D: [51.53, -0.13],
+    };
+
+    // Add markers for nodes
+    for (let node in nodeCoordinates) {
+      L.marker(nodeCoordinates[node]).addTo(map).bindPopup(`Node ${node}`);
+    }
+
+    // Heuristic function: Straight-line distance approximation
+    const heuristic = (node, goal) => {
+      const [x1, y1] = nodeCoordinates[node];
+      const [x2, y2] = nodeCoordinates[goal];
+      return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+    };
+
+    // A* Algorithm
+    function aStar(graph, start, goal) {
+      const openSet = [start];
+      const cameFrom = {};
+
+      const gScore = {};
+      const fScore = {};
+      for (let node in graph) {
+        gScore[node] = Infinity;
+        fScore[node] = Infinity;
+      }
+      gScore[start] = 0;
+      fScore[start] = heuristic(start, goal);
+
+      while (openSet.length > 0) {
+        openSet.sort((a, b) => fScore[a] - fScore[b]); // Sort by fScore
+        const current = openSet.shift();
+
+        if (current === goal) {
+          const path = [];
+          let temp = current;
+          while (temp) {
+            path.unshift(temp);
+            temp = cameFrom[temp];
+          }
+          return path; // Return the path
+        }
+
+        for (let neighbor in graph[current]) {
+          const tentativeGScore = gScore[current] + graph[current][neighbor];
+          if (tentativeGScore < gScore[neighbor]) {
+            cameFrom[neighbor] = current;
+            gScore[neighbor] = tentativeGScore;
+            fScore[neighbor] = tentativeGScore + heuristic(neighbor, goal);
+            if (!openSet.includes(neighbor)) {
+              openSet.push(neighbor);
+            }
+          }
+        }
+      }
+
+      return null; // No path found
+    }
+
+    // Find Path Button
+    document.getElementById('findPath').addEventListener('click', () => {
+      const startNode = 'A';
+      const endNode = 'D';
+      const path = aStar(graph, startNode, endNode);
+
+      if (path) {
+        alert(`Path found: ${path.join(' → ')}`);
+
+        // Draw path on map
+        const latLngs = path.map((node) => nodeCoordinates[node]);
+        L.polyline(latLngs, { color: 'blue', weight: 5 }).addTo(map);
+      } else {
+        alert('No path found.');
+      }
+    });
+  </script>
+</body>
+</html>

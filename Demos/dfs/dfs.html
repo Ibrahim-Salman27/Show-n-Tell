@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Mouse Maze Solver (DFS)</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f8f8f8;
+      font-family: Arial, sans-serif;
+    }
+    .maze {
+      display: grid;
+      grid-template-columns: repeat(10, 40px);
+      grid-gap: 2px;
+    }
+    .cell {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+    }
+    .wall {
+      background-color: #444;
+    }
+    .empty {
+      background-color: #eee;
+    }
+    .start {
+      background-color: #4caf50;
+    }
+    .end {
+      background-color: #f44336;
+    }
+    .visited {
+      background-color: #9c27b0;
+    }
+    .path {
+      background-color: #ffc107;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="maze" id="maze"></div>
+  <button id="nextButton">Next Step</button>
+  <script src="dfs.js"></script>
+</body>
+</html>
