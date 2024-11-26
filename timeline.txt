@@ -71,3 +71,7 @@ discussed the slides with all members and updated the slides (BFS DFS part)
 added a text file on the content of slides
 19/11/2024
 completed slides of graph theory basics part
+
+11/26/2024
+refined my slides
+
