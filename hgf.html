@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-World A* Pathfinding</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+        }
+        #info {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="info" style="position: absolute; top: 10px; left: 10px; z-index: 1000; width: 300px;">
+        <h3>Pathfinding Info</h3>
+        <p>Click on the map to select waypoints. Heuristic costs and the shortest path will be displayed.</p>
+        <ul id="waypoints"></ul>
+    </div>
+
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([31.5497, 74.3436], 13); // Center on Lahore
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Variables to hold waypoints and routing control
+        var waypoints = [];
+        var routingControl;
+
+        // Calculate heuristic (straight-line distance) using the Haversine formula
+        function haversineDistance(lat1, lon1, lat2, lon2) {
+            var toRad = function (x) { return x * Math.PI / 180; };
+            var R = 6371; // Radius of Earth in kilometers
+            var dLat = toRad(lat2 - lat1);
+            var dLon = toRad(lon2 - lon1);
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distance in kilometers
+        }
+
+        // Update waypoint info and heuristic costs
+        function updateWaypointInfo() {
+            var waypointList = document.getElementById('waypoints');
+            waypointList.innerHTML = '';
+
+            waypoints.forEach((point, index) => {
+                var heuristic = index < waypoints.length - 1
+                    ? haversineDistance(point.lat, point.lng, waypoints[waypoints.length - 1].lat, waypoints[waypoints.length - 1].lng).toFixed(2)
+                    : 0;
+
+                var listItem = document.createElement('li');
+                listItem.textContent = `Point ${index + 1}: (${point.lat.toFixed(3)}, ${point.lng.toFixed(3)}) - Heuristic (h): ${heuristic} km`;
+                waypointList.appendChild(listItem);
+            });
+        }
+
+        // Add a click event to select waypoints
+        map.on('click', function (e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            // Add the clicked point to the waypoints array
+            waypoints.push({ lat: lat, lng: lng });
+
+            // Add a marker for the waypoint
+            L.marker([lat, lng]).addTo(map);
+
+            // Update the waypoint info
+            updateWaypointInfo();
+
+            // Draw or update the route
+            if (waypoints.length > 1) {
+                if (routingControl) {
+                    map.removeControl(routingControl);
+                }
+
+                routingControl = L.Routing.control({
+                    waypoints: waypoints.map(point => L.latLng(point.lat, point.lng)),
+                    routeWhileDragging: false,
+                    show: false
+                }).addTo(map);
+
+                routingControl.on('routesfound', function (e) {
+                    var routes = e.routes;
+                    var summary = routes[0].summary;
+                    var totalDistance = (summary.totalDistance / 1000).toFixed(2); // Convert to km
+                    var totalTime = (summary.totalTime / 60).toFixed(0); // Convert to minutes
+
+                    var routeInfo = document.createElement('li');
+                    routeInfo.textContent = `Route: ${totalDistance} km, ${totalTime} minutes`;
+                    document.getElementById('waypoints').appendChild(routeInfo);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
