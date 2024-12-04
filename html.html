@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pathfinding Visualizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .controls {
+      margin: 20px 0;
+    }
+
+    .controls input[type="range"] {
+      margin: 0 10px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .grid {
+      display: inline-block;
+      margin: 0 auto;
+      border: 2px solid #ccc;
+      background-color: white;
+    }
+
+    .row {
+      display: flex;
+    }
+
+    .node {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ddd;
+      user-select: none;
+    }
+
+    .node-start {
+      background-color: #4caf50;
+    }
+
+    .node-end {
+      background-color: #ff5722;
+    }
+
+    .node-wall {
+      background-color: #000;
+    }
+
+    .node-visited {
+      background-color: #2196f3;
+    }
+
+    .node-path {
+      background-color: #ffeb3b;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pathfinding Visualizer</h1>
+  <div class="controls">
+    <button id="startButton">Start A*</button>
+    <button id="clearButton">Clear Grid</button>
+    <label for="speedRange">Speed:</label>
+    <input id="speedRange" type="range" min="10" max="200" value="50">
+    <span id="speedValue">50ms</span>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    const rows = 20;
+    const cols = 40;
+    const gridElement = document.getElementById("grid");
+    let grid = [];
+    let isRunning = false;
+    let startNode = { row: 0, col: 0 };
+    let endNode = { row: rows - 1, col: cols - 1 };
+    let isDragging = false;
+    let dragMode = null; // "start", "end", or "wall"
+
+    // Speed control
+    const speedInput = document.getElementById("speedRange");
+    const speedValue = document.getElementById("speedValue");
+    speedInput.addEventListener("input", () => {
+      speedValue.textContent = `${speedInput.value}ms`;
+    });
+
+    // Initialize the grid
+    function createGrid() {
+      grid = [];
+      gridElement.innerHTML = "";
+      for (let row = 0; row < rows; row++) {
+        const rowElement = document.createElement("div");
+        rowElement.className = "row";
+        const currentRow = [];
+        for (let col = 0; col < cols; col++) {
+          const node = {
+            row,
+            col,
+            isStart: row === 0 && col === 0,
+            isEnd: row === rows - 1 && col === cols - 1,
+            isWall: false,
+            isVisited: false,
+            previousNode: null,
+          };
+          currentRow.push(node);
+
+          const nodeElement = document.createElement("div");
+          nodeElement.className = "node";
+          if (node.isStart) nodeElement.classList.add("node-start");
+          if (node.isEnd) nodeElement.classList.add("node-end");
+
+          nodeElement.addEventListener("mousedown", (e) => handleMouseDown(node, nodeElement));
+          nodeElement.addEventListener("mouseover", (e) => handleMouseOver(node, nodeElement));
+          nodeElement.addEventListener("mouseup", () => handleMouseUp());
+
+          rowElement.appendChild(nodeElement);
+        }
+        grid.push(currentRow);
+        gridElement.appendChild(rowElement);
+      }
+    }
+
+    function handleMouseDown(node, element) {
+      if (isRunning) return;
+      if (node.isStart) {
+        dragMode = "start";
+      } else if (node.isEnd) {
+        dragMode = "end";
+      } else {
+        dragMode = "wall";
+        toggleWall(node, element);
+      }
+      isDragging = true;
+    }
+
+    function handleMouseOver(node, element) {
+      if (!isDragging || isRunning) return;
+      if (dragMode === "start" && !node.isWall && !node.isEnd) {
+        updateStartNode(node, element);
+      } else if (dragMode === "end" && !node.isWall && !node.isStart) {
+        updateEndNode(node, element);
+      } else if (dragMode === "wall") {
+        toggleWall(node, element);
+      }
+    }
+
+    function handleMouseUp() {
+      isDragging = false;
+      dragMode = null;
+    }
+
+    function toggleWall(node, element) {
+      if (node.isStart || node.isEnd) return;
+      node.isWall = !node.isWall;
+      element.classList.toggle("node-wall");
+    }
+
+    function updateStartNode(node, element) {
+      grid[startNode.row][startNode.col].isStart = false;
+      document.querySelector(".node-start").classList.remove("node-start");
+      node.isStart = true;
+      element.classList.add("node-start");
+      startNode = node;
+    }
+
+    function updateEndNode(node, element) {
+      grid[endNode.row][endNode.col].isEnd = false;
+      document.querySelector(".node-end").classList.remove("node-end");
+      node.isEnd = true;
+      element.classList.add("node-end");
+      endNode = node;
+    }
+
+    // A* Algorithm Implementation
+    function aStarAlgorithm() {
+      const openSet = [startNode];
+      const visitedNodes = [];
+      while (openSet.length > 0) {
+        openSet.sort((a, b) => a.f - b.f); // Sort by f-score
+        const currentNode = openSet.shift();
+        visitedNodes.push(currentNode);
+
+        if (currentNode.row === endNode.row && currentNode.col === endNode.col) {
+          return visitedNodes;
+        }
+
+        const neighbors = getNeighbors(currentNode);
+        for (const neighbor of neighbors) {
+          if (neighbor.isVisited || neighbor.isWall) continue;
+          neighbor.isVisited = true;
+          neighbor.previousNode = currentNode;
+          neighbor.g = (currentNode.g || 0) + 1;
+          neighbor.h = heuristic(neighbor, endNode);
+          neighbor.f = neighbor.g + neighbor.h;
+          openSet.push(neighbor);
+        }
+      }
+      return visitedNodes;
+    }
+
+    function getNeighbors(node) {
+      const neighbors = [];
+      const { row, col } = node;
+      if (row > 0) neighbors.push(grid[row - 1][col]);
+      if (row < rows - 1) neighbors.push(grid[row + 1][col]);
+      if (col > 0) neighbors.push(grid[row][col - 1]);
+      if (col < cols - 1) neighbors.push(grid[row][col + 1]);
+      return neighbors;
+    }
+
+    function heuristic(nodeA, nodeB) {
+      return Math.abs(nodeA.row - nodeB.row) + Math.abs(nodeA.col - nodeB.col); // Manhattan distance
+    }
+
+    function animatePathfinding(visitedNodes) {
+      visitedNodes.forEach((node, index) => {
+        setTimeout(() => {
+          const nodeElement = gridElement.children[node.row].children[node.col];
+          nodeElement.classList.add("node-visited");
+          if (index === visitedNodes.length - 1) {
+            animateShortestPath(node);
+          }
+        }, index * speedInput.value);
+      });
+    }
+
+    function animateShortestPath(endNode) {
+      let currentNode = endNode;
+      while (currentNode !== null) {
+        const nodeElement = gridElement.children[currentNode.row].children[currentNode.col];
+        nodeElement.classList.add("node-path");
+        currentNode = currentNode.previousNode;
+      }
+      isRunning = false;
+    }
+
+    // Start Visualization
+    document.getElementById("startButton").addEventListener("click", () => {
+      if (isRunning) return;
+      isRunning = true;
+      const visitedNodes = aStarAlgorithm();
+      animatePathfinding(visitedNodes);
+    });
+
+    // Clear the Grid
+    document.getElementById("clearButton").addEventListener("click", () => {
+      if (isRunning) return;
+      createGrid();
+    });
+
+    // Initialize
+    createGrid();
+  </script>
+</body>
+</html>
