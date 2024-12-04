@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pathfinding Algorithm Visualizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+    .grid-container {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(20, 25px);
+      grid-template-rows: repeat(20, 25px);
+      gap: 1px;
+      border: 1px solid black;
+    }
+    .cell {
+      width: 25px;
+      height: 25px;
+      background-color: white;
+      border: 1px solid #ddd;
+    }
+    .cell.wall {
+      background-color: black;
+    }
+    .cell.visited {
+      background-color: lightblue;
+    }
+    .cell.path {
+      background-color: yellow;
+    }
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .controls label {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pathfinding Algorithm Visualizer</h1>
+  <div class="grid-container">
+    <div id="grid-bfs" class="grid"></div>
+    <div id="grid-dfs" class="grid"></div>
+    <div id="grid-dijkstra" class="grid"></div>
+  </div>
+  <div class="controls">
+    <label for="speed">Animation Speed: <span id="speed-value">500</span> ms</label>
+    <input id="speed" type="range" min="100" max="1000" value="500">
+    <button id="start">Start Algorithms</button>
+  </div>
+
+  <script>
+    const grids = {
+      bfs: document.getElementById('grid-bfs'),
+      dfs: document.getElementById('grid-dfs'),
+      dijkstra: document.getElementById('grid-dijkstra')
+    };
+
+    const gridData = {
+      bfs: [],
+      dfs: [],
+      dijkstra: []
+    };
+
+    const numRows = 20;
+    const numCols = 20;
+    const directions = [
+      [0, 1], [1, 0], [0, -1], [-1, 0]
+    ];
+
+    let isMouseDown = false;
+
+    const createGrid = (grid, algorithm) => {
+      for (let i = 0; i < numRows; i++) {
+        gridData[algorithm].push([]);
+        for (let j = 0; j < numCols; j++) {
+          const cell = document.createElement('div');
+          cell.classList.add('cell');
+          cell.dataset.row = i;
+          cell.dataset.col = j;
+          grid.appendChild(cell);
+          gridData[algorithm][i].push('empty');
+
+          cell.addEventListener('mousedown', () => {
+            isMouseDown = true;
+            toggleWall(i, j, algorithm);
+          });
+          cell.addEventListener('mouseenter', () => {
+            if (isMouseDown) toggleWall(i, j, algorithm);
+          });
+          cell.addEventListener('mouseup', () => isMouseDown = false);
+        }
+      }
+    };
+
+    const toggleWall = (row, col, algorithm) => {
+      const cell = grids[algorithm].children[row * numCols + col];
+      if (gridData[algorithm][row][col] === 'wall') {
+        cell.classList.remove('wall');
+        gridData[algorithm][row][col] = 'empty';
+      } else {
+        cell.classList.add('wall');
+        gridData[algorithm][row][col] = 'wall';
+      }
+      synchronizeWalls(row, col, algorithm);
+    };
+
+    const synchronizeWalls = (row, col, sourceAlgorithm) => {
+      Object.keys(gridData).forEach(algorithm => {
+        if (algorithm !== sourceAlgorithm) {
+          const cell = grids[algorithm].children[row * numCols + col];
+          if (gridData[sourceAlgorithm][row][col] === 'wall') {
+            cell.classList.add('wall');
+            gridData[algorithm][row][col] = 'wall';
+          } else {
+            cell.classList.remove('wall');
+            gridData[algorithm][row][col] = 'empty';
+          }
+        }
+      });
+    };
+
+    const visualizeAlgorithm = async (algorithm, start, end) => {
+      const queue = [start];
+      const visited = new Set();
+      const parent = {};
+      const speed = document.getElementById('speed').value;
+
+      while (queue.length > 0) {
+        const [row, col] = algorithm === 'dfs' ? queue.pop() : queue.shift();
+        if (visited.has(`${row},${col}`)) continue;
+        visited.add(`${row},${col}`);
+
+        const cell = grids[algorithm].children[row * numCols + col];
+        if (!cell.classList.contains('wall') && `${row},${col}` !== `${start[0]},${start[1]}`) {
+          cell.classList.add('visited');
+          await sleep(speed);
+        }
+
+        if (row === end[0] && col === end[1]) {
+          reconstructPath(parent, start, end, algorithm);
+          return;
+        }
+
+        for (const [dr, dc] of directions) {
+          const newRow = row + dr;
+          const newCol = col + dc;
+          if (
+            newRow >= 0 && newRow < numRows &&
+            newCol >= 0 && newCol < numCols &&
+            !visited.has(`${newRow},${newCol}`) &&
+            gridData[algorithm][newRow][newCol] !== 'wall'
+          ) {
+            queue.push([newRow, newCol]);
+            parent[`${newRow},${newCol}`] = [row, col];
+          }
+        }
+      }
+    };
+
+    const reconstructPath = async (parent, start, end, algorithm) => {
+      let [row, col] = end;
+      while (`${row},${col}` !== `${start[0]},${start[1]}`) {
+        const cell = grids[algorithm].children[row * numCols + col];
+        cell.classList.add('path');
+        [row, col] = parent[`${row},${col}`];
+        await sleep(50);
+      }
+    };
+
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    document.getElementById('speed').addEventListener('input', (e) => {
+      document.getElementById('speed-value').innerText = e.target.value;
+    });
+
+    document.getElementById('start').addEventListener('click', async () => {
+      const start = [0, 0];
+      const end = [numRows - 1, numCols - 1];
+      await Promise.all([
+        visualizeAlgorithm('bfs', start, end),
+        visualizeAlgorithm('dfs', start, end),
+        visualizeAlgorithm('dijkstra', start, end)
+      ]);
+    });
+
+    createGrid(grids.bfs, 'bfs');
+    createGrid(grids.dfs, 'dfs');
+    createGrid(grids.dijkstra, 'dijkstra');
+  </script>
+</body>
+</html>

@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Rubik's Cube</title>
     <link rel="stylesheet" href="style.css">
+    
+
 </head>
 <body>
     <div class="container">
         <h1>Interactive 3D Rubik's Cube</h1>
         <div id="cube-container">
             <div id="cube">
-                <!-- Faces of the Cube -->
                 <div class="face up"></div>
                 <div class="face right"></div>
                 <div class="face front"></div>
@@ -22,8 +23,11 @@
         </div>
         <textarea id="scrambledInput" placeholder="Enter scrambled state (54 characters)" maxlength="54"></textarea>
         <button id="solveBtn">Solve Cube</button>
+        <button id="solveMovesBtn">Get Solution Moves</button>
         <p id="solution"></p>
     </div>
+    <!-- Add Cube.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/cube-js@0.1.0/lib/cube.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

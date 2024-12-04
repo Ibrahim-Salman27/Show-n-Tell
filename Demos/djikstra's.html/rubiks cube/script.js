@@ -1,4 +1,4 @@
-const cube = document.getElementById('cube');
+//const cube = document.getElementById('cube');
 let isDragging = false;
 let previousMousePosition = { x: 0, y: 0 };
 let rotation = { x: 0, y: 0 };
@@ -52,7 +52,7 @@ function renderCube(scrambledState) {
     });
 }
 
-// Handle solve button
+// Solve cube using Cube.js
 document.getElementById('solveBtn').addEventListener('click', () => {
     const scrambledInput = document.getElementById('scrambledInput').value.trim();
     if (scrambledInput.length !== 54) {
@@ -60,4 +60,17 @@ document.getElementById('solveBtn').addEventListener('click', () => {
         return;
     }
     renderCube(scrambledInput);
+});
+
+// Get solution moves using Cube.js
+document.getElementById('solveMovesBtn').addEventListener('click', () => {
+    const scrambledInput = document.getElementById('scrambledInput').value.trim();
+    if (scrambledInput.length !== 54) {
+        alert('Invalid input! Enter 54 characters representing the cube state.');
+        return;
+    }
+    const cube = new Cube();
+    cube.setState(scrambledInput);
+    const solutionMoves = cube.solve();
+    document.getElementById('solution').innerText = solutionMoves.join(' ');
 });
